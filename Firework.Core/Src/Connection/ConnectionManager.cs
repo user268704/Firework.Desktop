@@ -19,7 +19,7 @@ public class ConnectionManager : IConnectionManager
 
     public ConnectionManager()
     {
-        _connectionInfo = Empty;
+        _connectionInfo ??= Empty;
     }
 
     public ConnectionInfo GetCurrentConnectionInfo()

@@ -5,6 +5,7 @@ using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 using Firework.Abstraction.Services;
 using Firework.Core.Logs;
 using Firework.Core.MacroServices.Attrubutes;
@@ -37,7 +38,7 @@ public class OsService : ServiceBase
         Process.Start("cmd", "shutdown /s /t 0");
     }
 
-    [ActionService(Alias = "externalipv4")]
+    [ActionService(Alias = "getexternalipv4")]
     public string GetExternalIp()
     {
         return GetExternalIPAddress();
@@ -65,14 +66,11 @@ public class OsService : ServiceBase
     public string GetInfo()
     {
         // TODO: оптимизировать
-        var result = new StringBuilder();
-
         PerformanceCounter cpuCounter = new("Processor", "% Processor Time", "_Total");
         var firstValue = cpuCounter.NextValue();
         Thread.Sleep(1000);
 
-        var secondValue = cpuCounter.NextValue();
-
+        var secondValue = (double)cpuCounter.NextValue();
         var cult = new CultureInfo(CultureInfo.CurrentCulture.Name);
 
         new NetEventService().AddEvent(new NetworkEvent
@@ -82,14 +80,17 @@ public class OsService : ServiceBase
             Date = DateTime.Now,
         });
 
-        result.Append("(cpu:" + secondValue.ToString(new CultureInfo(CultureInfo.CurrentCulture.Name)) + ";");
-        result.Append("gpu:" + GetGpu().ToString(new CultureInfo(CultureInfo.CurrentCulture.Name)) + ";");
-        result.Append("ram:" + GetRam().ToString(new CultureInfo(CultureInfo.CurrentCulture.Name)) + ")");
+        var result = JsonSerializer.Serialize(new
+        {
+            Cpu = secondValue.ToString(CultureInfo.InvariantCulture),
+            Gpu = GetGpu().ToString(CultureInfo.InvariantCulture),
+            Ram = GetRam().ToString(CultureInfo.InvariantCulture)
+        });
 
-        return result.ToString();
+        return result;
     }
 
-    private float GetGpu()
+    private double GetGpu()
     {
         try
         {
@@ -118,7 +119,7 @@ public class OsService : ServiceBase
         }
     }
 
-    private float GetRam()
+    private double GetRam()
     {
         var ramMonitor = //запрос к WMI для получения памяти ПК
             new ManagementObjectSearcher("SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem");

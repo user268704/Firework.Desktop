@@ -59,8 +59,10 @@ public class SignalHub : Hub, IConnectionService
         return base.OnConnectedAsync();
     }
 
-    public async Task<Handshake> InitializationConnection(GetInfoResult initializationInfo)
+    public async Task<Handshake> InitializationConnection(DeviceInfoHandshake initializationInfo)
     {
+        _connectionManager.ChangeState(ConnectionState.Connected);
+
         _connectionManager.SetConnectionInfo(new ConnectionInfo
         {
             State = ConnectionState.Connected,
@@ -77,13 +79,17 @@ public class SignalHub : Hub, IConnectionService
             Date = DateTime.Now
         });
 
-        /*var handshake = new HandshakeResult
+        var instructionGetUsername = _instructionService.CreateInstruction("os>username");
+
+        var deviceName = _macroLauncher.Start(instructionGetUsername);
+
+        var handshake = new Handshake
         {
             DeviceName = deviceName.Value,
             EndPoint = GetHost(),
-        };*/
+        };
 
-        return default;
+        return handshake;
     }
 
     public async Task<List<InstructionResult>> Command(List<InstructionInfo> instruction)
