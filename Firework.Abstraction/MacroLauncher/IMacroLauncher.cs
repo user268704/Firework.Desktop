@@ -1,5 +1,5 @@
-﻿using Firework.Dto.Results;
-using Firework.Models.Instructions;
+﻿using Firework.Dto.Instructions;
+using Firework.Dto.Results;
 
 namespace Firework.Abstraction.MacroLauncher;
 

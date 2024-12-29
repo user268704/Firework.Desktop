@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.Json.Serialization;
 
-namespace Firework.Models.Instructions;
+namespace Firework.Dto.Instructions;
 
 public class ActionInfo
 {

@@ -1,4 +1,4 @@
-﻿namespace Firework.Models.Instructions;
+﻿namespace Firework.Dto.Instructions;
 
 /*public class Parameter
 {

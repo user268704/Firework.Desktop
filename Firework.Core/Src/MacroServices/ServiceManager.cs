@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
 using Firework.Abstraction.Services;
 using Firework.Core.MacroServices.Attrubutes;
-using Firework.Models.Instructions;
-using Firework.Models.Services;
+using Firework.Dto.Instructions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Firework.Core.MacroServices;

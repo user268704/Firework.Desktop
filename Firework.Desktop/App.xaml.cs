@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
+using Firework.Abstraction.Connection;
 using Firework.Abstraction.Data;
-using Firework.Abstraction.HttpServer;
 using Firework.Abstraction.Instruction;
 using Firework.Abstraction.MacroLauncher;
 using Firework.Abstraction.Services;
@@ -19,140 +19,138 @@ using Firework.Core.Services;
 using Firework.Desktop.Services;
 using Firework.Desktop.ViewModel;
 using Firework.Desktop.Views.Pages;
+using Firework.Models.Data;
 using Firework.Models.Metadata;
-using Firework.Models.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
-using Application = System.Windows.Application;
 
-namespace Firework.Desktop
+namespace Firework.Desktop;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    private Mutex? _mutex;
+    private bool _isSingleInstance;
+    private const string MutexName = "FireworkDesktopSingleInstance";
+
+    public App()
     {
-        private Mutex? _mutex;
-        private bool _isSingleInstance;
-        private const string MutexName = "FireworkDesktopSingleInstance";
+        _mutex = new Mutex(true, MutexName, out _isSingleInstance);
 
-        public App()
+        if (!_isSingleInstance)
         {
-            _mutex = new Mutex(true, MutexName, out _isSingleInstance);
+            Current.Shutdown();
+        }
+    }
 
-            if (!_isSingleInstance)
-            {
-                Current.Shutdown();
-            }
+    protected override void OnExit(ExitEventArgs e)
+    {
+        base.OnExit(e);
+
+        if (_mutex != null)
+        {
+            _mutex.ReleaseMutex();
+            _mutex.Dispose();
+        }
+    }
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        if (!_isSingleInstance)
+        {
+            return;
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        var host = new HostApplication();
+
+        ServiceManager serviceManager = new();
+
+        host.ConfigureServices((_, collection) =>
         {
-            base.OnExit(e);
+            #region Windows
 
-            if (_mutex != null)
-            {
-                _mutex.ReleaseMutex();
-                _mutex.Dispose();
-            }
-        }
+            collection.AddSingleton<MainWindow>();
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            if (!_isSingleInstance)
-            {
-                return;
-            }
+            #endregion
 
-            var host = new HostApplication();
+            #region Pages
 
-            ServiceManager serviceManager = new();
+            collection.AddSingleton<MainPage>();
+            collection.AddScoped<SettingsPage>();
+            collection.AddScoped<EventsPage>();
+            collection.AddScoped<NetworkManagerPage>();
 
-            host.ConfigureServices((_, collection) =>
-            {
-                #region Windows
+            #endregion
 
-                collection.AddSingleton<MainWindow>();
+            #region ViewModels
 
-                #endregion
+            collection.AddSingleton<SettingsViewModel>();
+            collection.AddSingleton<NetworkManagerViewModel>();
+            collection.AddSingleton<MainWindowViewModel>();
 
-                #region Pages
+            #endregion
 
-                collection.AddSingleton<MainPage>();
-                collection.AddScoped<SettingsPage>();
-                collection.AddScoped<EventsPage>();
-                collection.AddScoped<NetworkManagerPage>();
+            #region Services
 
-                #endregion
+            collection.AddScoped<IInstructionService, InstructionService>();
+            collection.AddScoped<IPageService, PageService>();
+            collection.AddScoped<IFileService, FileService>();
+            collection.AddSingleton<INetEventService, NetEventService>();
 
-                #region ViewModels
+            collection.AddScoped<IConnectionManager, ConnectionManager>();
+            collection.AddScoped<IMacroLauncher, MacroLauncher>();
+            collection.AddScoped<IServiceManager, ServiceManager>();
 
-                collection.AddSingleton<SettingsViewModel>();
-                collection.AddSingleton<NetworkManagerViewModel>();
-                collection.AddSingleton<MainWindowViewModel>();
+            #endregion
 
-                #endregion
+            #region DataBase
 
-                #region Services
+            collection.AddScoped<IDataRepository<SettingsItem>, SettingsRepository>();
+            collection.AddScoped<IDataRepository<Metadata>, MetadataRepository>();
+            collection.AddScoped<DbRepository>();
 
-                collection.AddScoped<IInstructionService, InstructionService>();
-                collection.AddScoped<IPageService, PageService>();
-                collection.AddScoped<IFileService, FileService>();
-                collection.AddSingleton<INetEventService, NetEventService>();
+            #endregion
 
-                collection.AddScoped<IConnectionManager, ConnectionManager>();
-                collection.AddScoped<IMacroLauncher, MacroLauncher>();
-                collection.AddScoped<IServiceManager, ServiceManager>();
+            #region InstructionServices
 
-                #endregion
+            collection.AddService<AppService>(serviceManager);
+            collection.AddService<OsService>(serviceManager);
+            collection.AddService<KeyboardService>(serviceManager);
+            collection.AddService<MouseService>(serviceManager);
+            collection.AddService<TaskService>(serviceManager);
 
-                #region DataBase
+            #endregion
 
-                collection.AddScoped<IDataRepository<SettingsItem>, SettingsRepository>();
-                collection.AddScoped<IDataRepository<Metadata>, MetadataRepository>();
-                collection.AddScoped<DbRepository>();
+            #region NetworkConfiguration
 
-                #endregion
+            collection.AddRouting();
+            collection.AddSignalR();
 
-                #region InstructionServices
+            #endregion
 
-                collection.AddService<AppService>(serviceManager);
-                collection.AddService<OsService>(serviceManager);
-                collection.AddService<KeyboardService>(serviceManager);
-                collection.AddService<MouseService>(serviceManager);
-                collection.AddService<TaskService>(serviceManager);
+        });
 
-                #endregion
+        host.Build();
+        host.ConfigureApplication();
 
-                #region NetworkConfiguration
+        _ =  host.RunAppAsync();
 
-                collection.AddRouting();
-                collection.AddSignalR();
+        serviceManager.ServiceProvider = host.ServiceProvider;
 
-                #endregion
+        var mainWindow = host.ServiceProvider.GetRequiredService<MainWindow>();
+        mainWindow.Show();
 
-            });
-
-            host.Build();
-            host.ConfigureApplication();
-
-            _ =  host.RunAppAsync();
-
-            serviceManager.ServiceProvider = host.ServiceProvider;
-
-            var mainWindow = host.ServiceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
-            
-            base.OnStartup(e);
-        }
+        base.OnStartup(e);
+    }
 
 
-        private void RunInTray()
-        {
-            throw new NotImplementedException();
+    private void RunInTray()
+    {
+        throw new NotImplementedException();
 
-            //WindowState = WindowState.Minimized;
-            //ShowInTaskbar = false;
+        //WindowState = WindowState.Minimized;
+        //ShowInTaskbar = false;
 
-            //TrayIcon.Visibility = Visibility.Visible;
-        }
+        //TrayIcon.Visibility = Visibility.Visible;
     }
 }
 

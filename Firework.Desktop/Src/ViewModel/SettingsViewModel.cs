@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Firework.Abstraction.Data;
 using Firework.Core.Settings;
-using Firework.Models.Settings;
+using Firework.Models.Data;
 using Wpf.Ui.Input;
 
 namespace Firework.Desktop.ViewModel;

@@ -1,4 +1,4 @@
-﻿using Firework.Abstraction.HttpServer;
+﻿using Firework.Abstraction.Connection;
 using Firework.Models.Server;
 
 namespace Firework.Core.Connection;

@@ -1,6 +1,6 @@
 ﻿using Firework.Models.Server;
 
-namespace Firework.Abstraction.HttpServer;
+namespace Firework.Abstraction.Connection;
 
 public interface IConnectionManager
 {

@@ -1,4 +1,4 @@
-﻿namespace Firework.Maui.Models.Models.ServiceResults;
+﻿namespace Firework.Dto.Results;
 
 public class GetLoadResult
 {

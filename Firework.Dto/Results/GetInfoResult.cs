@@ -1,4 +1,4 @@
-﻿namespace Firework.Models.Dto;
+﻿namespace Firework.Dto.Results;
 
 public class GetInfoResult
 {

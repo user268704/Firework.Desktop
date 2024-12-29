@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
-using Firework.Models.Services;
-
-namespace Firework.Models.Instructions;
+﻿namespace Firework.Dto.Instructions;
 
 /*public class Instruction
 {

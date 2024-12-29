@@ -4,8 +4,8 @@ using System.Linq;
 using Firework.Abstraction.Data;
 using Firework.Core.Consts;
 using Firework.Core.Settings;
+using Firework.Models.Data;
 using Firework.Models.Metadata;
-using Firework.Models.Settings;
 
 namespace Firework.Desktop.Services.Settings;
 

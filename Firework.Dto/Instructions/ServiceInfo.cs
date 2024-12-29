@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using Firework.Models.Instructions;
 
-namespace Firework.Models.Services;
+namespace Firework.Dto.Instructions;
 
 public class ServiceInfo
 {

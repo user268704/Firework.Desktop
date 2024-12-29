@@ -6,16 +6,16 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Firework.Abstraction.Connection;
 using Firework.Abstraction.Data;
-using Firework.Abstraction.HttpServer;
 using Firework.Abstraction.Instruction;
 using Firework.Abstraction.MacroLauncher;
 using Firework.Core.Exceptions;
 using Firework.Core.Settings;
+using Firework.Dto.Instructions;
 using Firework.Dto.Results;
-using Firework.Models.Instructions;
+using Firework.Models.Data;
 using Firework.Models.Server;
-using Firework.Models.Settings;
 
 namespace Firework.Desktop.ViewModel;
 

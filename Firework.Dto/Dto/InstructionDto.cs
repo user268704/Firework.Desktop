@@ -1,7 +1,6 @@
-﻿using System.Reflection;
-using Firework.Models.Instructions;
+﻿using Firework.Dto.Instructions;
 
-namespace Firework.Models.Dto;
+namespace Firework.Dto.Dto;
 
 public class InstructionDto
 {

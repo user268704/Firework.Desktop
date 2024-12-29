@@ -1,7 +1,7 @@
 ﻿using Firework.Abstraction.Data;
 using Firework.Core.Connection;
 using Firework.Core.Settings;
-using Firework.Models.Settings;
+using Firework.Models.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

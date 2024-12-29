@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Firework.Abstraction.HttpServer;
+using Firework.Abstraction.Connection;
 
 namespace Firework.Desktop.ViewModel;
 

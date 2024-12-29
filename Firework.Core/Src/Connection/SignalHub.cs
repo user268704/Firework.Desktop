@@ -1,21 +1,17 @@
 ﻿using Firework.Abstraction.Connection;
 using Firework.Abstraction.Data;
-using Firework.Abstraction.HttpServer;
 using Firework.Abstraction.Instruction;
 using Firework.Abstraction.MacroLauncher;
 using Firework.Abstraction.Services.NetEventService;
 using Firework.Core.Logs;
 using Firework.Core.Settings;
+using Firework.Dto.Dto;
+using Firework.Dto.Instructions;
 using Firework.Dto.Results;
-using Firework.Mobile.Models.Models.Results;
-using Firework.Models.Dto;
 using Firework.Models.Events;
-using Firework.Models.Instructions;
 using Firework.Models.Server;
-using Firework.Models.Settings;
 using Microsoft.AspNetCore.SignalR;
 using SQLitePCL;
-using Handshake = Firework.Models.Server.Handshake;
 
 namespace Firework.Core.Connection;
 
@@ -30,7 +26,6 @@ public class SignalHub : Hub, IConnectionService
 
     public SignalHub(INetEventService netEventService,
         IConnectionManager connectionManager,
-        IDataRepository<SettingsItem> settingsRepository,
         IInstructionService instructionService,
         IMacroLauncher macroLauncher)
     {
@@ -57,13 +52,54 @@ public class SignalHub : Hub, IConnectionService
         return base.OnDisconnectedAsync(exception);
     }
 
+    public override Task OnConnectedAsync()
+    {
+        _connectionManager.ChangeState(ConnectionState.Connecting);
+
+        return base.OnConnectedAsync();
+    }
+
+    public async Task<Handshake> InitializationConnection(GetInfoResult initializationInfo)
+    {
+        _connectionManager.SetConnectionInfo(new ConnectionInfo
+        {
+            State = ConnectionState.Connected,
+            ClientIp = initializationInfo.Ip,
+            DateConnected = DateTime.Now,
+            ClientName = initializationInfo.DeviceName,
+            IsConnected = true,
+        });
+
+        _netEventService.AddEvent(new NetworkEvent
+        {
+            Message = $"Подключено устройство: {initializationInfo.DeviceName} ({initializationInfo.Ip})",
+            EventType = NetworkEvent.TypeEvent.Connect,
+            Date = DateTime.Now
+        });
+
+        /*var handshake = new HandshakeResult
+        {
+            DeviceName = deviceName.Value,
+            EndPoint = GetHost(),
+        };*/
+
+        return default;
+    }
+
     public async Task<List<InstructionResult>> Command(List<InstructionInfo> instruction)
     {
         var connectionInfo = _connectionManager.GetCurrentConnectionInfo();
 
-        if (!connectionInfo.Equals(_connectionManager.Empty))
+        if (connectionInfo.State is not ConnectionState.Connected)
         {
-            await InitializeConnection();
+            return new List<InstructionResult>
+            {
+                new()
+                {
+                    Value = "Соединение не установлено",
+                    Status = StatusCode.Error
+                }
+            };
         }
 
         _netEventService.AddEvent(new NetworkEvent
@@ -78,35 +114,6 @@ public class SignalHub : Hub, IConnectionService
         var result = _macroLauncher.StartRange(instruction);
 
         return result;
-    }
-
-    private async Task InitializeConnection()
-    {
-        var deviceName = _macroLauncher.Start(_instructionService.CreateInstruction("os>username"));
-
-        var handshake = new Handshake
-        {
-            DeviceName = deviceName.Value,
-            EndPoint = GetHost(),
-        };
-
-        var getInfoResult = await Clients.Caller.InvokeAsync<GetInfoResult>("GetInfo", handshake, _cancellationToken);
-
-        _connectionManager.SetConnectionInfo(new ConnectionInfo
-        {
-            State = ConnectionState.Connected,
-            ClientIp = getInfoResult.Ip,
-            DateConnected = DateTime.Now,
-            ClientName = getInfoResult.DeviceName,
-            IsConnected = true,
-        });
-
-        _netEventService.AddEvent(new NetworkEvent
-        {
-            Message = $"Подключено устройство: {getInfoResult.DeviceName} ({getInfoResult.Ip})",
-            EventType = NetworkEvent.TypeEvent.Connect,
-            Date = DateTime.Now
-        });
     }
 
     private string GetHost()

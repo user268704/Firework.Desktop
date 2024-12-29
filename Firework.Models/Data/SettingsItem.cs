@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Firework.Models.Settings;
+﻿namespace Firework.Models.Data;
 
 public class SettingsItem : IEquatable<SettingsItem>, ICloneable
 {

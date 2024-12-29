@@ -2,7 +2,7 @@
 using Firework.Abstraction.Services;
 using Firework.Core.LowLevel.Mouse;
 using Firework.Core.MacroServices.Attrubutes;
-using Firework.Models.Instructions;
+using Firework.Dto.Instructions;
 
 namespace Firework.Core.MacroServices;
 

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Firework.Abstraction.Data;
 using Firework.Core.Settings;
-using Firework.Models.Settings;
+using Firework.Models.Data;
 
 namespace Firework.Core.Startup;
 

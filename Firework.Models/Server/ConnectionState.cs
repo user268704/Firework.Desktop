@@ -3,7 +3,8 @@
 public enum ConnectionState
 {
     Connected,
+    Connecting,
     Reconnecting,
     Disconnected,
-    NotConnected,
+    NotConnected
 }

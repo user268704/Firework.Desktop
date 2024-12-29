@@ -1,9 +1,9 @@
 ﻿using Firework.Abstraction.MacroLauncher;
 using Firework.Abstraction.Services;
 using Firework.Core.Services;
+using Firework.Dto.Instructions;
 using Firework.Dto.Results;
 using Firework.Models;
-using Firework.Models.Instructions;
 
 namespace Firework.Core.Macro;
 

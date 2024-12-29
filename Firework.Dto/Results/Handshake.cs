@@ -1,4 +1,4 @@
-﻿namespace Firework.Mobile.Models.Models.Results;
+﻿namespace Firework.Dto.Results;
 
 public class Handshake
 {

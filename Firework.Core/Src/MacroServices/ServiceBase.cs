@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Firework.Abstraction.Services;
 using Firework.Core.Exceptions;
-using Firework.Models.Instructions;
+using Firework.Dto.Instructions;
 
 namespace Firework.Core.MacroServices;
 

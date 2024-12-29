@@ -5,9 +5,8 @@ using Firework.Abstraction.Instruction;
 using Firework.Abstraction.Services;
 using Firework.Core.Exceptions;
 using Firework.Core.Services;
-using Firework.Models.Dto;
-using Firework.Models.Instructions;
-using Firework.Models.Services;
+using Firework.Dto.Dto;
+using Firework.Dto.Instructions;
 
 namespace Firework.Core.Instruction;
 

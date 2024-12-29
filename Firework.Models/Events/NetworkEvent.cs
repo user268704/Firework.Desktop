@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Firework.Models.Instructions;
+using Firework.Dto.Instructions;
 
 namespace Firework.Models.Events;
 

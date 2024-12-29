@@ -4,7 +4,6 @@ using System.Data.SQLite;
 using System.Text;
 using Dapper;
 using Firework.Abstraction.Data;
-using Firework.Models.Settings;
 using Microsoft.Data.Sqlite;
 
 namespace Firework.Core.Data;

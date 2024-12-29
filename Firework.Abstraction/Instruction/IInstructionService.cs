@@ -1,4 +1,4 @@
-﻿using Firework.Models.Instructions;
+﻿using Firework.Dto.Instructions;
 
 namespace Firework.Abstraction.Instruction;
 
