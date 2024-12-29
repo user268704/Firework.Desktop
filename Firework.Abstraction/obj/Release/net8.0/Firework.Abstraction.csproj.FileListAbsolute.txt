@@ -1,0 +1,16 @@
+D:\Code\Firework\Firework.Abstraction\bin\Release\net8.0\Firework.Abstraction.deps.json
+D:\Code\Firework\Firework.Abstraction\bin\Release\net8.0\Firework.Abstraction.dll
+D:\Code\Firework\Firework.Abstraction\bin\Release\net8.0\Firework.Abstraction.pdb
+D:\Code\Firework\Firework.Abstraction\bin\Release\net8.0\Firework.Models.dll
+D:\Code\Firework\Firework.Abstraction\bin\Release\net8.0\Firework.Models.pdb
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.Abstraction.csproj.AssemblyReference.cache
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.Abstraction.GeneratedMSBuildEditorConfig.editorconfig
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.Abstraction.AssemblyInfoInputs.cache
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.Abstraction.AssemblyInfo.cs
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.Abstraction.csproj.CoreCompileInputs.cache
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.Abstraction.sourcelink.json
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.109901E6.Up2Date
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.Abstraction.dll
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\refint\Firework.Abstraction.dll
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\Firework.Abstraction.pdb
+D:\Code\Firework\Firework.Abstraction\obj\Release\net8.0\ref\Firework.Abstraction.dll

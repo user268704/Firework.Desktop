@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "i4s/ol20AR4=",
+  "success": true,
+  "projectFilePath": "D:\\Code\\Firework.Desktop\\Firework.Abstraction\\Firework.Abstraction.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\fiste\\.nuget\\packages\\messagepack.annotations\\2.5.187\\messagepack.annotations.2.5.187.nupkg.sha512",
+    "C:\\Users\\fiste\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\fiste\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

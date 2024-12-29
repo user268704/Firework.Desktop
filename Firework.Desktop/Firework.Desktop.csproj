@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Resource Include="Src\Resources\Fonts\semibold.ttf" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Wpf.Ui">
+        <HintPath>C:\Users\fiste\.nuget\packages\wpf-ui\2.0.2\lib\net6.0-windows7.0\Wpf.Ui.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Firework.Core\Firework.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+      <PackageReference Include="WPF-UI" Version="3.0.5" />
+      <PackageReference Include="WPF-UI.Tray" Version="3.0.5" />
+      <PackageReference Include="XamlRadialProgressBar" Version="1.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Src\Views\Windows\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Src\Views\Pages\EventsPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Src\Views\Pages\MainWindow.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Src\Views\Pages\NetworkManagerPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Src\Views\Pages\SettingsPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+
+</Project>

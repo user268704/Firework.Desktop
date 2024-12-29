@@ -1,0 +1,100 @@
+﻿<Page x:Class="Firework.Desktop.Views.Pages.NetworkManagerPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d"
+        Title="Подключения">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Margin="10, 20, 0, 0" x:Name="ManagePanel" Opacity="0.85">
+                <StackPanel>
+                    <StackPanel Margin="10" Orientation="Horizontal" MouseLeftButtonUp="ClickHostNameCard">
+                        <ui:TextBlock Text="хост:" VerticalAlignment="Center" FontTypography="Title" Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}" />
+                        <ui:CardControl x:Name="HostCard" VerticalAlignment="Center">
+                            <Grid>
+                                <ui:TextBlock x:Name="HostTextBlock" HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              FontTypography="Subtitle"
+                                              Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}"
+                                              Text="{Binding FullHost}" />
+                                <ui:TextBox FontSize="17" Text="{Binding FullHost}" x:Name="HostTextBox"
+                                            Visibility="Collapsed"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}"/>
+                            </Grid>
+                        </ui:CardControl>
+                        <ui:Button x:Name="SaveChangesHostButton" Click="SaveChangesHostButton_OnClick" Visibility="Collapsed">Сохранить</ui:Button>
+                    </StackPanel>
+                    <Grid VerticalAlignment="Bottom">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        
+                        
+                        <ui:Button 
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="5"
+                            Command="{Binding RestartServerCommand}"
+                            x:Name="RestartAll"
+                            Content="Перезагрузка сервера" />
+                        <ui:Button 
+                            Grid.Row="0"
+                            Grid.Column="1" 
+                            Margin="5" 
+                            Command="{Binding StopServerCommand}"
+                            x:Name="CloseAllConnections"
+                            Content="Остановить сервер" />
+                        
+                        <ui:Button 
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="5"
+                            Command="{Binding StartServerCommand}"
+                            Content="Запустить сервер" />
+                        <ui:Button
+                            Grid.Row="2"
+                            Grid.Column="0" 
+                            Margin="5"
+                            Command="{Binding StopReceivingCommand}"
+                            x:Name="StopCommand"
+                            Content="Остановить получение команд" />
+                        <ui:ToggleSwitch
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="5"
+                            Command="{Binding StopSendingStatus}"
+                            x:Name="StopInfo"
+                            Content="Запретить отправку состояния" />
+                    </Grid>
+                    <StackPanel Margin="10">
+                        <ui:TextBlock Text="Выполнить команду" FontTypography="Title" Foreground="{ui:ThemeResource TextFillColorPrimaryBrush}" />
+                        <ui:TextBox PlaceholderText="os>shutdown()" x:Name="CommandTextBox" Text="{Binding CommandText}" VerticalContentAlignment="Top" TextWrapping="Wrap"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <ui:Button Margin="10" Command="{Binding ClearResultCommand}" HorizontalAlignment="Right" Content="Очистить"/>
+                            <ui:Button Margin="10" Command="{Binding SendCommand}" CommandParameter="{Binding CommandText}" HorizontalAlignment="Right" Content="Выполнить"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <ui:TextBox IsReadOnly="True" x:Name="CommandResult" Text="{Binding CommandResult}" TextWrapping="Wrap" Height="150" Margin="10"/>
+                    </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

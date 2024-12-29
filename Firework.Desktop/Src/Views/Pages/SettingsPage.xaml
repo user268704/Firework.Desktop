@@ -1,0 +1,123 @@
+﻿<Page x:Class="Firework.Desktop.Views.Pages.SettingsPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d"
+        Title="Настройки">
+    <Page.Resources>
+        <Style x:Key="PathLogs" TargetType="StackPanel">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=WriteLogsInFile}" Value="False">
+                    <DataTrigger.Setters>
+                        <Setter Property="UIElement.Visibility" Value="Collapsed" />
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+    <StackPanel Margin="10">
+        <ui:CardExpander IsExpanded="True" Header="Логи">
+            <ui:CardExpander.Content>
+                <StackPanel>
+                    <ui:CardControl Margin="0,0,0,12"
+                                    Icon="{ui:SymbolIcon AlignSpaceEvenlyVertical20}">
+                        <ui:CardControl.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ui:TextBlock
+                                    Grid.Row="0"
+                                    FontTypography="Body"
+                                    Text="Уведомления об отправленной нагрузке" />
+                            </Grid>
+                        </ui:CardControl.Header>
+                        <StackPanel >
+                            <ui:ToggleSwitch 
+                                IsChecked="{Binding ViewModel.NotifyInfoSend}"
+                                CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" 
+                                Command="{Binding ViewModel.UpdateNotifyInfoSendCommand}"  />
+                        </StackPanel>
+                    </ui:CardControl>
+                </StackPanel>
+            </ui:CardExpander.Content>
+        </ui:CardExpander>
+
+        <ui:CardExpander IsExpanded="True" Header="Запуск">
+            <StackPanel>
+                <ui:CardControl Margin="0,0,0,12" Icon="{ui:SymbolIcon AlignSpaceEvenlyVertical20}">
+                    <ui:CardControl.Header>
+                        <ui:TextBlock
+                            Grid.Row="0"
+                            FontTypography="Body"
+                            Text="Запуск программы вместе с ОС" />
+                    </ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:ToggleSwitch
+                            IsChecked="{Binding ViewModel.AutoRun}"
+                            CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" 
+                            Command="{Binding ViewModel.AutoRunCommand}"  />
+                    </StackPanel>
+                </ui:CardControl>
+            
+                <ui:CardControl Margin="0,0,0,12" Icon="{ui:SymbolIcon AlignSpaceEvenlyVertical20}">
+                    <ui:CardControl.Header>
+                        <ui:TextBlock
+                            Grid.Row="0"
+                            FontTypography="Body"
+                            Text="Запуск приложения в трее" />
+                    </ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:ToggleSwitch
+                            IsChecked="{Binding ViewModel.RunInTray}"
+                            CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" 
+                            Command="{Binding ViewModel.RunInTrayCommand}"/>
+                    </StackPanel>
+                </ui:CardControl>
+            </StackPanel>
+        </ui:CardExpander>
+        
+        <ui:CardExpander IsExpanded="True" Header="Видимость работы">
+            <StackPanel>
+                <ui:CardControl>
+                    <ui:CardControl.Header>
+                        <ui:TextBlock
+                            Grid.Row="0"
+                            FontTypography="Body"
+                            Text="Сворачивать приложение в трей" />
+                    </ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:ToggleSwitch 
+                            IsChecked="{Binding ViewModel.MinimizeInTray}"
+                            CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" 
+                            Command="{Binding ViewModel.MinimizeInTrayCommand}"  />
+                    </StackPanel>
+                </ui:CardControl>
+            
+                <ui:CardControl>
+                    <ui:CardControl.Header>
+                        <StackPanel>
+                            <ui:TextBlock
+                                Grid.Row="0"
+                                FontTypography="Body"
+                                Text="Сидеть тихо" />
+                            <ui:TextBlock
+                                Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                                FontTypography="Body"
+                                Text="Не показываться на глаза" />
+                        </StackPanel>
+                    </ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:ToggleSwitch 
+                            IsChecked="{Binding ViewModel.KeepSilent}"
+                            CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" 
+                            Command="{Binding ViewModel.KeepSilentCommand}"  />
+                    </StackPanel>
+                </ui:CardControl>
+            </StackPanel>
+        </ui:CardExpander>
+    </StackPanel>
+</Page>
