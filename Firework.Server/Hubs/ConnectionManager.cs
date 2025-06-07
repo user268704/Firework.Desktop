@@ -1,7 +1,8 @@
 ﻿using Firework.Abstraction.Connection;
 using Firework.Models.Server;
+using ConnectionInfo = Firework.Models.Server.ConnectionInfo;
 
-namespace Firework.Core.Connection;
+namespace Firework.Server.Hubs;
 
 public class ConnectionManager : IConnectionManager
 {

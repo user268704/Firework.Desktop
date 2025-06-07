@@ -3,7 +3,6 @@ using Firework.Abstraction.Data;
 using Firework.Abstraction.Instruction;
 using Firework.Abstraction.MacroLauncher;
 using Firework.Abstraction.Services.NetEventService;
-using Firework.Core.Logs;
 using Firework.Core.Settings;
 using Firework.Dto.Dto;
 using Firework.Dto.Instructions;
@@ -12,11 +11,11 @@ using Firework.Models.Data;
 using Firework.Models.Events;
 using Firework.Models.Server;
 using Microsoft.AspNetCore.SignalR;
-using SQLitePCL;
+using ConnectionInfo = Firework.Models.Server.ConnectionInfo;
 
-namespace Firework.Core.Connection;
+namespace Firework.Server.Hubs;
 
-public class SignalHub : Hub, IConnectionService
+public class SignalHub : Hub
 {
     private readonly INetEventService _netEventService;
     private readonly IConnectionManager _connectionManager;
@@ -134,31 +133,5 @@ public class SignalHub : Hub, IConnectionService
         var port = _settingsRepository.FindBy(x => x.UniqueKey == SettingsDefault.Names.LocalPort);
 
         return result.Value + ":" + port.Value;
-    }
-
-    public void StartServer()
-    {
-        
-        throw new NotImplementedException();
-    }
-
-    public void SendInstruction(string endpoint, InstructionInfo instruction)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void SetFilter(string endpoint, IConnectionFilter filter)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void StopServer()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void RestartServer()
-    {
-        throw new NotImplementedException();
     }
 }

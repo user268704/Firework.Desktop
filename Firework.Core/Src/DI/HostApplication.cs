@@ -1,6 +1,4 @@
 ﻿using Firework.Abstraction.Data;
-using Firework.Core.Connection;
-using Firework.Core.Settings;
 using Firework.Models.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,7 +56,7 @@ public class HostApplication
         int port = 5062;
 
         _webApplication.Urls.Add($"http://{host}:{port}");
-        _webApplication.MapHub<SignalHub>("/signal");
+        //_webApplication.MapHub<SignalHub>("/signal");
         _webApplication.MapGet("/index", () => "Hello World!");
     }
 }

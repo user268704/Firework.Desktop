@@ -6,7 +6,7 @@ namespace Firework.Core;
 
 public class NetEventService : INetEventService
 {
-    private static List<NetworkEvent> NetworkEvents { get; } = new();
+    private static List<NetworkEvent> NetworkEvents { get; } = new(100);
     private object locker = new();
 
     public event EventHandler<NetworkEvent>? OnEventAdded; 
