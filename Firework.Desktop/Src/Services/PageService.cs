@@ -2,10 +2,11 @@
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
+using Wpf.Ui.Abstractions;
 
 namespace Firework.Desktop.Services;
 
-public class PageService : IPageService
+public class PageService : INavigationViewPageProvider
 {
     /// <summary>
     /// Service which provides the instances of pages.
@@ -33,7 +34,7 @@ public class PageService : IPageService
     }
 
     /// <inheritdoc />
-    public FrameworkElement? GetPage(Type pageType)
+    public object? GetPage(Type pageType)
     {
         if (!typeof(FrameworkElement).IsAssignableFrom(pageType))
         {

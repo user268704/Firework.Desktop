@@ -23,6 +23,7 @@ using Firework.Models.Data;
 using Firework.Models.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
+using Wpf.Ui.DependencyInjection;
 
 namespace Firework.Desktop;
 
@@ -89,14 +90,15 @@ public partial class App : Application
 
             #endregion
 
+            collection.AddNavigationViewPageProvider();
+            
             #region Services
 
             collection.AddScoped<IInstructionService, InstructionService>();
-            collection.AddScoped<IPageService, PageService>();
             collection.AddScoped<IFileService, FileService>();
             collection.AddSingleton<INetEventService, NetEventService>();
 
-            collection.AddScoped<IConnectionManager, ConnectionManager>();
+            collection.AddSingleton<IConnectionManager, ConnectionManager>();
             collection.AddScoped<IMacroLauncher, MacroLauncher>();
             collection.AddScoped<IServiceManager, ServiceManager>();
 

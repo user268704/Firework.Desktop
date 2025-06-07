@@ -7,6 +7,9 @@ public class ConnectionManager : IConnectionManager
 {
     private static ConnectionInfo _connectionInfo;
 
+    public event EventHandler<ConnectionInfo> OnConnectionChanged;
+
+
     public ConnectionInfo Empty =>
         new()
         {
@@ -41,6 +44,4 @@ public class ConnectionManager : IConnectionManager
     {
         _connectionInfo.State = state;
     }
-
-    public event EventHandler<ConnectionInfo> OnConnectionChanged;
 }

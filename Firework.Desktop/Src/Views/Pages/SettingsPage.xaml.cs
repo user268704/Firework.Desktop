@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using Firework.Desktop.ViewModel;
+using Wpf.Ui.Abstractions.Controls;
 using Wpf.Ui.Controls;
 
 namespace Firework.Desktop.Views.Pages;

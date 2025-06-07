@@ -8,6 +8,7 @@ using Firework.Core.Settings;
 using Firework.Dto.Dto;
 using Firework.Dto.Instructions;
 using Firework.Dto.Results;
+using Firework.Models.Data;
 using Firework.Models.Events;
 using Firework.Models.Server;
 using Microsoft.AspNetCore.SignalR;
@@ -21,18 +22,21 @@ public class SignalHub : Hub, IConnectionService
     private readonly IConnectionManager _connectionManager;
     private readonly IInstructionService _instructionService;
     private readonly IMacroLauncher _macroLauncher;
+    private readonly IDataRepository<SettingsItem> _settingsRepository;
 
     private CancellationToken _cancellationToken;
 
     public SignalHub(INetEventService netEventService,
         IConnectionManager connectionManager,
         IInstructionService instructionService,
-        IMacroLauncher macroLauncher)
+        IMacroLauncher macroLauncher,
+        IDataRepository<SettingsItem> settingsRepository)
     {
         _netEventService = netEventService;
         _connectionManager = connectionManager;
         _instructionService = instructionService;
         _macroLauncher = macroLauncher;
+        _settingsRepository = settingsRepository;
     }
 
 
@@ -127,7 +131,9 @@ public class SignalHub : Hub, IConnectionService
         var instruction = _instructionService.CreateInstruction("os>getexternalipv4");
         var result = _macroLauncher.Start(instruction);
 
-        return result.Value;
+        var port = _settingsRepository.FindBy(x => x.UniqueKey == SettingsDefault.Names.LocalPort);
+
+        return result.Value + ":" + port.Value;
     }
 
     public void StartServer()

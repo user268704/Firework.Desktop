@@ -10,6 +10,7 @@ using Firework.Models.Data;
 using Firework.Models.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
+using Wpf.Ui.Abstractions;
 using Wpf.Ui.Controls;
 namespace Firework.Desktop.Views.Pages;
 
@@ -22,12 +23,13 @@ public partial class MainWindow : FluentWindow
     
     public MainWindow(MainWindowViewModel mainWindowViewModel,
         IDataRepository<SettingsItem> settingsRepository,
-        IPageService pageService)
+        INavigationViewPageProvider pageService)
     {
         InitializeComponent();
         _settingsRepository = settingsRepository;
         
-        RootNavigation.SetPageService(pageService);
+        
+        RootNavigation.SetPageProviderService(pageService);
         ViewModel = mainWindowViewModel;
 
         DataContext = ViewModel;
@@ -37,6 +39,8 @@ public partial class MainWindow : FluentWindow
 
     private void WindowStateChanged(object? sender, EventArgs e)
     {
+        return;
+
         var isMinimizeInTray = _settingsRepository.GetAll().First(x => x.UniqueKey == SettingsDefault.Names.MinimizeInTray);
 
         if (bool.Parse(isMinimizeInTray.Value))

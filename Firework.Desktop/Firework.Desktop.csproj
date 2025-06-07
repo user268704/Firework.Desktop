@@ -23,17 +23,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
-      <PackageReference Include="WPF-UI" Version="3.0.5" />
-      <PackageReference Include="WPF-UI.Tray" Version="3.0.5" />
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
+      <PackageReference Include="WPF-UI" Version="4.0.2" />
+      <PackageReference Include="WPF-UI.DependencyInjection" Version="4.0.2" />
+      <PackageReference Include="WPF-UI.Tray" Version="4.0.2" />
       <PackageReference Include="XamlRadialProgressBar" Version="1.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Src\Views\Windows\" />
     </ItemGroup>
 
     <ItemGroup>

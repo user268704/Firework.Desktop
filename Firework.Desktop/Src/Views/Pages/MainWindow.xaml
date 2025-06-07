@@ -7,8 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
-    xmlns:xrpb="http://XamlRadialProgressBar/DotNet"
-    xmlns:pages="clr-namespace:Firework.Desktop.Views.Pages"
     xmlns:components="clr-namespace:Firework.Desktop.Views.Components"
     mc:Ignorable="d"
     WindowBackdropType="Mica"
@@ -75,7 +73,7 @@
                               ConverterParameter=ожидание подключения}" VerticalAlignment="Center"/>
                 <ui:ProgressRing x:Name="ConnectProgressBar"
                                  Margin="5"
-                                 Visibility="{Binding ConnectionInfo.ConnectedDeviceInfo.IsConnected,
+                                 Visibility="{Binding ConnectionInfo.IsConnected,
                                  Converter={StaticResource VisibilityBoolConverter}}"
                                  Width="15" Height="15"
                                  IsIndeterminate="True"
