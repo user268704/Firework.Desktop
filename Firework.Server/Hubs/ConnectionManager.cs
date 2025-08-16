@@ -6,10 +6,10 @@ namespace Firework.Server.Hubs;
 
 public class ConnectionManager : IConnectionManager
 {
-    private static ConnectionInfo _connectionInfo;
+    private ConnectionInfo _connectionInfo;
+    private readonly object _lock = new object();
 
     public event EventHandler<ConnectionInfo> OnConnectionChanged;
-
 
     public ConnectionInfo Empty =>
         new()
@@ -23,26 +23,32 @@ public class ConnectionManager : IConnectionManager
 
     public ConnectionManager()
     {
-        _connectionInfo ??= Empty;
+        _connectionInfo = Empty;
     }
 
     public ConnectionInfo GetCurrentConnectionInfo()
     {
-        return _connectionInfo;
+        lock (_lock)
+        {
+            return _connectionInfo;
+        }
     }
 
     public void SetConnectionInfo(ConnectionInfo connectionInfo)
     {
-        _connectionInfo = connectionInfo;
-
-        if (OnConnectionChanged != null)
+        lock (_lock)
         {
-            OnConnectionChanged(this, connectionInfo);
+            _connectionInfo = connectionInfo;
         }
+
+        OnConnectionChanged?.Invoke(this, connectionInfo);
     }
 
     public void ChangeState(ConnectionState state)
     {
-        _connectionInfo.State = state;
+        lock (_lock)
+        {
+            _connectionInfo.State = state;
+        }
     }
 }

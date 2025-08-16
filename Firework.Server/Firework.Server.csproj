@@ -19,4 +19,8 @@
       <ProjectReference Include="..\Firework.Dto\Firework.Dto.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Services\" />
+    </ItemGroup>
+
 </Project>

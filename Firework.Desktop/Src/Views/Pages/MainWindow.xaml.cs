@@ -1,15 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using Firework.Abstraction.Data;
-using Firework.Core.Settings;
+﻿using System.Windows;
 using Firework.Desktop.ViewModel;
-using Firework.Desktop.Views.Components;
-using Firework.Models.Data;
-using Firework.Models.Server;
-using Microsoft.Extensions.DependencyInjection;
-using Wpf.Ui;
 using Wpf.Ui.Abstractions;
 using Wpf.Ui.Controls;
 namespace Firework.Desktop.Views.Pages;
@@ -17,17 +7,12 @@ namespace Firework.Desktop.Views.Pages;
 
 public partial class MainWindow : FluentWindow
 {
-    private readonly IDataRepository<SettingsItem> _settingsRepository;
-
     public MainWindowViewModel ViewModel { get; set; }
     
     public MainWindow(MainWindowViewModel mainWindowViewModel,
-        IDataRepository<SettingsItem> settingsRepository,
         INavigationViewPageProvider pageService)
     {
         InitializeComponent();
-        _settingsRepository = settingsRepository;
-        
         
         RootNavigation.SetPageProviderService(pageService);
         ViewModel = mainWindowViewModel;
@@ -41,8 +26,9 @@ public partial class MainWindow : FluentWindow
     {
         return;
 
-        var isMinimizeInTray = _settingsRepository.GetAll().First(x => x.UniqueKey == SettingsDefault.Names.MinimizeInTray);
+        //var isMinimizeInTray = _settingsRepository.GetAll().First(x => x.UniqueKey == SettingsDefault.Names.MinimizeInTray);
 
+        /*
         if (bool.Parse(isMinimizeInTray.Value))
         {
             if (WindowState == WindowState.Minimized)
@@ -71,6 +57,7 @@ public partial class MainWindow : FluentWindow
                 ShowInTaskbar = true;
             }
         }
+    */
     }
 
 

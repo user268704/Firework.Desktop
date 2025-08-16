@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Firework.Abstraction.Data;
-using Firework.Core.Settings;
+using Firework.Desktop.Services.Settings;
 using Firework.Models.Data;
 using Wpf.Ui.Input;
 

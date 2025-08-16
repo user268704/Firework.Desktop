@@ -1,8 +1,21 @@
 ﻿using System.Windows;
-using Firework.Core.DI;
+using Firework.Abstraction.Connection;
+using Firework.Abstraction.Data;
+using Firework.Abstraction.Instruction;
+using Firework.Abstraction.MacroLauncher;
+using Firework.Abstraction.Services;
+using Firework.Abstraction.Services.NetEventService;
+using Firework.Core;
+using Firework.Core.Data;
+using Firework.Core.Instruction;
+using Firework.Core.Macro;
+using Firework.Core.MacroServices;
+using Firework.Desktop.Services;
 using Firework.Desktop.ViewModel;
 using Firework.Desktop.Views.Pages;
+using Firework.Models.Data;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Wpf.Ui.DependencyInjection;
 
 namespace Firework.Desktop;
@@ -41,7 +54,7 @@ public partial class App : Application
             return;
         }
 
-        var host = new HostApplication();
+        var host = Host.CreateDefaultBuilder();
 
 
         host.ConfigureServices((_, collection) =>
@@ -69,16 +82,23 @@ public partial class App : Application
 
             #endregion
 
+            collection.AddScoped<INetEventService, NetEventService>();
+            collection.AddScoped<IMacroLauncher, MacroLauncher>();
+            collection.AddScoped<IServiceManager, ServiceManager>();
+            collection.AddScoped<IInstructionService, InstructionService>();
+            collection.AddScoped<IDataRepository<SettingsItem>, SettingsRepository>();
+            collection.AddScoped<DbRepository, DbRepository>();
+            
+            
+            collection.AddHostedService<ServerLauncherHostedService>();
+
             collection.AddNavigationViewPageProvider();
         });
-
-        host.Build();
-        host.ConfigureApplication();
-
-        _ =  host.RunAppAsync();
+        
+        var app = host.Build();
 
     
-        var mainWindow = host.ServiceProvider.GetRequiredService<MainWindow>();
+        var mainWindow = app.Services.GetRequiredService<MainWindow>();
         mainWindow.Show();
 
         base.OnStartup(e);

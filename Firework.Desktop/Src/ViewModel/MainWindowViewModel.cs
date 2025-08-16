@@ -1,10 +1,7 @@
-﻿using System;
-using Wpf.Ui.Controls;
-using System.ComponentModel;
+﻿using Wpf.Ui.Controls;
 using Firework.Models.Server;
 using Firework.Desktop.Views.Pages;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firework.Abstraction.Connection;
@@ -51,11 +48,11 @@ public sealed partial class MainWindowViewModel : ObservableObject, IDisposable
         }
     }
 
-    public MainWindowViewModel(IConnectionManager connectionManager)
+    public MainWindowViewModel(/*IConnectionManager connectionManager*/)
     {
-        _connectionManager = connectionManager;
-        ConnectionInfo = _connectionManager.GetCurrentConnectionInfo();
-        _connectionManager.OnConnectionChanged += OnConnectionChanged;
+        //_connectionManager = connectionManager;
+        //ConnectionInfo = _connectionManager.GetCurrentConnectionInfo();
+        //_connectionManager.OnConnectionChanged += OnConnectionChanged;
         
         MenuItems = new ObservableCollection<NavigationViewItem>
         {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Firework.Abstraction.Data;
-using Firework.Core.Consts;
-using Firework.Core.Settings;
+﻿using Firework.Abstraction.Data;
 using Firework.Models.Data;
 using Firework.Models.Metadata;
 
@@ -25,6 +20,7 @@ public class SettingsHandlers
 
     private void SetSettingHandlers(Dictionary<string, SettingsItem> settings)
     {
+        /*
         var appName = _metaRepository.FindBy(x => x.Name == MetadataNames.APP_NAME);
 
         settings[nameof(SettingsDefault.Fields.AppAutoRun)].Handler = (arg) =>
@@ -41,6 +37,7 @@ public class SettingsHandlers
                 handler.Off();
             }
         };
+    */
     }
 
 }

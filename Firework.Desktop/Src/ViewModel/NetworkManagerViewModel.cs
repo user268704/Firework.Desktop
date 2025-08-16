@@ -9,9 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Firework.Abstraction.Connection;
 using Firework.Abstraction.Data;
 using Firework.Abstraction.Instruction;
-using Firework.Abstraction.MacroLauncher;
-using Firework.Core.Exceptions;
-using Firework.Core.Settings;
+using Firework.Abstraction.MacroLauncher; 
 using Firework.Dto.Instructions;
 using Firework.Dto.Results;
 using Firework.Models.Data;
@@ -32,16 +30,15 @@ public sealed partial class NetworkManagerViewModel : ObservableObject
 
     public NetworkManagerViewModel(IMacroLauncher launcher,
         IInstructionService instructionService,
-        IConnectionManager connectionManager,
-
+        /*IConnectionManager connectionManager*/
         IDataRepository<SettingsItem> settingsRepository)
     {
         _launcher = launcher;
         _instructionService = instructionService;
-        _connectionManager = connectionManager;
+        //_connectionManager = connectionManager;
         _settingsRepository = settingsRepository;
 
-        _connectionManager.OnConnectionChanged += OnConnectionInfoChanged;
+        //_connectionManager.OnConnectionChanged += OnConnectionInfoChanged;
         FullHost = GetFullHost();
     }
 
@@ -52,7 +49,7 @@ public sealed partial class NetworkManagerViewModel : ObservableObject
 
     private string GetFullHost()
     {
-        string host = _settingsRepository
+        /*string host = _settingsRepository
             .GetAll()
             .First(x => x.UniqueKey == SettingsDefault.Names.LocalHost)
             .Value;
@@ -61,9 +58,10 @@ public sealed partial class NetworkManagerViewModel : ObservableObject
             .GetAll()
             .First(x => x.UniqueKey == SettingsDefault.Names.LocalPort)
             .Value;
+            */
 
 
-        return $"{host}:{port}";
+        return $"undefined";
     }
 
     [RelayCommand]
@@ -114,7 +112,7 @@ public sealed partial class NetworkManagerViewModel : ObservableObject
             CommandResult += result.ToString();
             //return result.ToString();
         }
-        catch (ParseInstructionException ex)
+        catch (Exception ex)
         {
             CommandResult += ex.Message;
             //return ex.Message;

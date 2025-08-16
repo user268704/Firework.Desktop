@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
 using Firework.Abstraction.Services.NetEventService;
-using Firework.Core;
 using Firework.Models.Events;
 
 namespace Firework.Desktop.Views.Pages;

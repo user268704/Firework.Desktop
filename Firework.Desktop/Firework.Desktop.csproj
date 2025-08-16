@@ -17,11 +17,7 @@
         <HintPath>C:\Users\fiste\.nuget\packages\wpf-ui\2.0.2\lib\net6.0-windows7.0\Wpf.Ui.dll</HintPath>
       </Reference>
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Firework.Core\Firework.Core.csproj" />
-    </ItemGroup>
-
+    
     <ItemGroup>
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
@@ -54,6 +50,12 @@
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Firework.Abstraction\Firework.Abstraction.csproj" />
+      <ProjectReference Include="..\Firework.Core\Firework.Core.csproj" />
+      <ProjectReference Include="..\Firework.Models\Firework.Models.csproj" />
     </ItemGroup>
 
 
