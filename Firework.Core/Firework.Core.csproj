@@ -39,6 +39,7 @@
 
     <ItemGroup>
       <Folder Include="Properties\" />
+      <Folder Include="Src\Services\Brokers\" />
     </ItemGroup>
 
 

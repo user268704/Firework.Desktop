@@ -32,10 +32,14 @@ public static class SettingsDefault
 
         [Display(Name = "Путь к папке логов")]
         public static string LogPathDirectory => "D:/Firework.Txt/Logs/";
+        
+        [Display(Name = "PipeServerName")]
+        public static string ServerPipeName => "Firework.Server.Pipe";
     }
 
     public static class Names
     {
+        public static string ServerPipeName => "ServerPipeName";
         public static string ApplicationName => "Application";
         public static string AppAutoRun => "AppAutoRun";
         public static string KeepSilent => "KeepSilent";

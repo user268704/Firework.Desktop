@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Firework.Abstraction.Connection;
 using Firework.Abstraction.Data;
 using Firework.Abstraction.Instruction;
 using Firework.Abstraction.MacroLauncher;
@@ -13,9 +12,12 @@ using Firework.Core.MacroServices;
 using Firework.Desktop.Services;
 using Firework.Desktop.ViewModel;
 using Firework.Desktop.Views.Pages;
+using Firework.Abstraction.Connection;
 using Firework.Models.Data;
+using Firework.Models.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Wpf.Ui.DependencyInjection;
 
 namespace Firework.Desktop;
@@ -25,6 +27,7 @@ public partial class App : Application
     private Mutex? _mutex;
     private bool _isSingleInstance;
     private const string MutexName = "FireworkDesktopSingleInstance";
+    private IHost? _host;
 
     public App()
     {
@@ -39,6 +42,12 @@ public partial class App : Application
     protected override void OnExit(ExitEventArgs e)
     {
         base.OnExit(e);
+        
+        if (_host != null)
+        {
+            _host.StopAsync().Wait(5000);
+            _host.Dispose();
+        }
 
         if (_mutex != null)
         {
@@ -54,10 +63,9 @@ public partial class App : Application
             return;
         }
 
-        var host = Host.CreateDefaultBuilder();
+        var hostBuilder = Host.CreateDefaultBuilder();
 
-
-        host.ConfigureServices((_, collection) =>
+        hostBuilder.ConfigureServices((_, collection) =>
         {
             #region Windows
 
@@ -87,23 +95,44 @@ public partial class App : Application
             collection.AddScoped<IServiceManager, ServiceManager>();
             collection.AddScoped<IInstructionService, InstructionService>();
             collection.AddScoped<IDataRepository<SettingsItem>, SettingsRepository>();
+            collection.AddScoped<IDataRepository<Metadata>, MetadataRepository>();
             collection.AddScoped<DbRepository, DbRepository>();
-            
+            collection.AddSingleton<IConnectionManager, DesktopConnectionManager>();
             
             collection.AddHostedService<ServerLauncherHostedService>();
+            collection.AddHostedService<ServerStatusMonitorService>();
+            collection.AddHostedService<ConnectionBackgroundService>();
 
             collection.AddNavigationViewPageProvider();
+        })
+        .ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddConsole();
+            logging.AddDebug();
+            logging.SetMinimumLevel(LogLevel.Information);
         });
         
-        var app = host.Build();
+        _host = hostBuilder.Build();
 
-    
-        var mainWindow = app.Services.GetRequiredService<MainWindow>();
+        // Запускаем хост в фоновом режиме
+        try
+        {
+            _host.StartAsync().Wait();
+            var logger = _host.Services.GetRequiredService<ILogger<App>>();
+            logger.LogInformation("Host started successfully");
+        }
+        catch (Exception ex)
+        {
+            // Если логирование еще не настроено, выводим в консоль
+            Console.WriteLine($"Error starting host: {ex.Message}");
+        }
+
+        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
         mainWindow.Show();
 
         base.OnStartup(e);
     }
-
 
     private void RunInTray()
     {

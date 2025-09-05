@@ -16,6 +16,9 @@
             
             <bindingConverters:VisibilityBoolConverter x:Key="VisibilityBoolConverter"/>
             <bindingConverters:EmptyStringConnectionConverter x:Key="EmptyStringConnectionConverter"/>
+            <bindingConverters:ConnectionProgressConverter x:Key="ConnectionProgressConverter"/>
+            <bindingConverters:ConnectionStatusConverter x:Key="ConnectionStatusConverter"/>
+            <bindingConverters:ConnectionStatusColorConverter x:Key="ConnectionStatusColorConverter"/>
             
             <SolidColorBrush x:Key="ButtonColor" Color="#2979ff" />
             <SolidColorBrush x:Key="HoverButtonColor" Color="#363A49"/>

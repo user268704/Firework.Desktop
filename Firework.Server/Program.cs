@@ -11,6 +11,7 @@ using Firework.Core.Instruction;
 using Firework.Core.Macro;
 using Firework.Core.MacroServices;
 using Firework.Core.Services;
+using Firework.Core.Services.PipeBroker;
 using Firework.Models.Data;
 using Firework.Models.Metadata;
 using Firework.Server;
@@ -29,6 +30,8 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddSingleton<INetEventService, NetEventService>();
 
 builder.Services.AddSingleton<IConnectionManager, ConnectionManager>();
+builder.Services.AddSingleton<IDeviceConnectionService, DeviceConnectionService>();
+builder.Services.AddSingleton<IDeviceAuthorizationService, DeviceAuthorizationService>();
 builder.Services.AddScoped<IMacroLauncher, MacroLauncher>();
 builder.Services.AddSingleton<IServiceManager, ServiceManager>();
 builder.Services.AddSingleton<ServiceManager>();
@@ -49,17 +52,21 @@ builder.Services.AddScoped<DbRepository>();
 
 #region InstructionServices
 
-builder.Services.AddService<AppService>();
-builder.Services.AddService<OsService>();
-builder.Services.AddService<KeyboardService>();
-builder.Services.AddService<MouseService>();
-builder.Services.AddService<TaskService>();
+// Инициализация ServiceManager после построения приложения
+var serviceManager = new ServiceManager();
+
+builder.Services.AddService<AppService>(serviceManager);
+builder.Services.AddService<OsService>(serviceManager);
+builder.Services.AddService<KeyboardService>(serviceManager);
+builder.Services.AddService<MouseService>(serviceManager);
+builder.Services.AddService<TaskService>(serviceManager);
 
 #endregion
 
 #region NetworkConfiguration
 
 builder.Services.AddRouting();
+builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -72,7 +79,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSignalR(options =>
 {
-    options.EnableDetailedErrors = builder.Environment.IsDevelopment();
+    options.EnableDetailedErrors = true;
     options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
     options.KeepAliveInterval = TimeSpan.FromSeconds(15);
 });
@@ -81,8 +88,6 @@ builder.Services.AddSignalR(options =>
 
 var app = builder.Build();
 
-// Инициализация ServiceManager после построения приложения
-var serviceManager = app.Services.GetRequiredService<ServiceManager>();
 serviceManager.ServiceProvider = app.Services;
 
 // Добавляем middleware для обработки ошибок
@@ -93,6 +98,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
+app.MapControllers();
 app.MapHub<SignalHub>("/signal");
 app.MapGet("/health", () => "ok");
 
@@ -105,9 +111,11 @@ namespace Firework.Server
 {
     static class ServiceCollectionExtend
     {
-        public static IServiceCollection AddService<T>(this IServiceCollection services) where T : class, IServiceBase
+        public static IServiceCollection AddService<T>(this IServiceCollection services, ServiceManager serviceManager) where T : class, IServiceBase
         {
-            services.AddSingleton<T>();
+            services.AddScoped<T>();
+            serviceManager.AddService<T>();
+            
             return services;
         }
     }

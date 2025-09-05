@@ -64,24 +64,55 @@
             </ui:NavigationView.AutoSuggestBox>
         </ui:NavigationView>
 
-        <ui:CardControl Grid.Row="2" Height="50" Padding="0" Margin="5" Click="UIElement_OnMouseLeftButtonUp" HorizontalAlignment="Right">
-            <StackPanel Orientation="Horizontal">
-                <ui:TextBlock FontTypography="Caption"
-                              Text="{Binding ConnectionInfo.ClientName,
-                              TargetNullValue=ожидание подключения,
-                              Converter={StaticResource EmptyStringConnectionConverter},
-                              ConverterParameter=ожидание подключения}" VerticalAlignment="Center"/>
-                <ui:ProgressRing x:Name="ConnectProgressBar"
-                                 Margin="5"
-                                 Visibility="{Binding ConnectionInfo.IsConnected,
-                                 Converter={StaticResource VisibilityBoolConverter}}"
-                                 Width="15" Height="15"
-                                 IsIndeterminate="True"
-                                 VerticalAlignment="Center"
-                                 HorizontalAlignment="Center"
-                                 Foreground="{StaticResource AccentColor}"/>
+        <Grid Grid.Row="2">
+            <!-- Карточка с информацией о подключении -->
+            <ui:CardControl Height="50" Padding="10" Margin="5" Click="UIElement_OnMouseLeftButtonUp" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <!-- Иконка статуса подключения -->
+                    <ui:SymbolIcon Symbol="{Binding ConnectionInfo.IsConnected, Converter={StaticResource ConnectionStatusConverter}}"
+                                   Margin="0,0,8,0"
+                                   VerticalAlignment="Center"
+                                   Foreground="{Binding ConnectionInfo.IsConnected, Converter={StaticResource ConnectionStatusColorConverter}}"/>
+                    
+                    <!-- Информация о подключении -->
+                    <StackPanel Orientation="Vertical" Margin="0,0,8,0">
+                        <ui:TextBlock FontTypography="Caption"
+                                      Text="{Binding ConnectionInfo.ClientName,
+                                      TargetNullValue=ожидание подключения,
+                                      Converter={StaticResource EmptyStringConnectionConverter},
+                                      ConverterParameter=ожидание подключения}" 
+                                      VerticalAlignment="Center"/>
+                        <ui:TextBlock FontTypography="Caption"
+                                      Text="{Binding ServerAddress}"
+                                      Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                      VerticalAlignment="Center"
+                                      FontSize="10"/>
+                    </StackPanel>
+                    
+                    <!-- Прогресс-бар только при ожидании подключения -->
+                    <ui:ProgressRing x:Name="ConnectProgressBar"
+                                     Margin="5"
+                                     Visibility="{Binding ConnectionInfo.IsConnected,
+                                     Converter={StaticResource ConnectionProgressConverter}}"
+                                     Width="15" Height="15"
+                                     IsIndeterminate="True"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Center"
+                                     Foreground="{StaticResource AccentColor}"/>
+                </StackPanel>
+            </ui:CardControl>
+            
+            <!-- Кнопки для тестирования (только для разработки) -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0">
+                <ui:Button Content="Подключить" 
+                           Command="{Binding SimulateClientConnectionCommand}"
+                           Margin="0,0,5,0"
+                           Style="{StaticResource MainButtonStyle}"/>
+                <ui:Button Content="Отключить" 
+                           Command="{Binding SimulateClientDisconnectionCommand}"
+                           Style="{StaticResource MainButtonStyle}"/>
             </StackPanel>
-        </ui:CardControl>
+        </Grid>
         <tray:NotifyIcon
             x:Name="TrayIcon"
             Visibility="Collapsed"

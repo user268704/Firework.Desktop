@@ -1,6 +1,10 @@
-﻿using System.Data.Entity.Migrations.Model;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data.Entity.Migrations.Model;
+using System.Reflection;
 using Firework.Abstraction.Data;
 using Firework.Core.Consts;
+using Firework.Core.Settings;
+using Firework.Models.Data;
 using Firework.Models.Metadata;
 
 namespace Firework.Core.Data;
@@ -13,16 +17,22 @@ public class MetadataRepository : IDataRepository<Metadata>
     [
         new()
         {
-            Id = Guid.NewGuid(),
+            Id = "metadata_app_name",
             Value = "Firework",
             Name = MetadataNames.APP_NAME
         },
 
         new()
         {
-            Id = Guid.NewGuid(),
+            Id = "metadata_version",
             Name = MetadataNames.VERSION,
             Value = "0.0.0"
+        },
+        new()
+        {
+            Id = "metadata_pipe_name",
+            Name = SettingsDefault.Names.ServerPipeName,
+            Value = SettingsDefault.Fields.ServerPipeName
         }
     ];
 
@@ -37,7 +47,7 @@ public class MetadataRepository : IDataRepository<Metadata>
     {
         string insertSql = $"""
                             INSERT INTO Metadata ({nameof(item.Id)}, {nameof(item.Name)}, {nameof(item.Value)}) 
-                            VALUES ({item.Id}, {item.Name}, {item.Value})
+                            VALUES ('{item.Id}', '{item.Name}', '{item.Value}')
                             """;
 
         _dbRepository.Execute(insertSql);
@@ -46,7 +56,7 @@ public class MetadataRepository : IDataRepository<Metadata>
     public Metadata GetById(string id)
     {
         string getByIdSql = $"""
-                            SELECT * FROM Settings WHERE {nameof(Metadata.Id)} = '{id}'
+                            SELECT * FROM Metadata WHERE {nameof(Metadata.Id)} = '{id}'
                             """;
 
         return _dbRepository.ExecuteGetSingle<Metadata>(getByIdSql);
@@ -73,8 +83,9 @@ public class MetadataRepository : IDataRepository<Metadata>
             return;
 
         string updateSql = $"""
-                            UPDATE Settings
-                            SET Value = '{newItem.Value}', 
+                            UPDATE Metadata
+                            SET Value = '{newItem.Value}',
+                                Name = '{newItem.Name}'
                             WHERE Id = '{newItem.Id}';
                             """;
 
@@ -83,7 +94,9 @@ public class MetadataRepository : IDataRepository<Metadata>
 
     public List<Metadata> GetAll()
     {
-        throw new NotImplementedException();
+        string getAllSql = "SELECT * FROM Metadata";
+
+        return _dbRepository.ExecuteGetCollection<Metadata>(getAllSql);
     }
 
     public void Delete(Metadata item)
@@ -100,9 +113,9 @@ public class MetadataRepository : IDataRepository<Metadata>
     {
         string createTableSql = """
                                 CREATE TABLE IF NOT EXISTS Metadata (
-                                    Id varchar(30) PRIMARY KEY,
-                                    Name varchar(100) NOT NULL,
-                                    Value varchar(100) NOT NULL
+                                    Id TEXT PRIMARY KEY,
+                                    Name TEXT NOT NULL,
+                                    Value TEXT NOT NULL
                                     )
                                 """;
 
@@ -113,11 +126,14 @@ public class MetadataRepository : IDataRepository<Metadata>
 
     private void CreateDefaultValues()
     {
-        var allMetadata = GetAll().ExceptBy(_defaultMetadata.Select(x => x.Name), metadata => metadata.Name);
-
-        foreach (Metadata item in allMetadata)
+        foreach (var item in _defaultMetadata)
         {
-            Insert(item);
+            var existingItem = GetById(item.Id);
+
+            if (existingItem == null)
+            {
+                Insert(item);
+            }
         }
     }
 }

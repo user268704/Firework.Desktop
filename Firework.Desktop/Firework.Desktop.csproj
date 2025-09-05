@@ -58,5 +58,21 @@
       <ProjectReference Include="..\Firework.Models\Firework.Models.csproj" />
     </ItemGroup>
 
+    <!-- Копируем сервер в выходную папку -->
+    <ItemGroup>
+      <Content Include="..\Firework.Server\bin\Debug\net8.0\Firework.Server.exe">
+        <Link>Firework.Server.exe</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\Firework.Server\bin\Debug\net8.0\Firework.Server.dll">
+        <Link>Firework.Server.dll</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="..\Firework.Server\bin\Debug\net8.0\appsettings.json">
+        <Link>appsettings.json</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 
 </Project>
