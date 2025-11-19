@@ -4,3 +4,4 @@
 *.dll
 *.exe
 *.pdb
+\.vs\
