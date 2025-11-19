@@ -1,4 +1,5 @@
 using Firework.Dto.Instructions;
+using Firework.Models.Instructions;
 
 namespace Firework.Core.Services;
 

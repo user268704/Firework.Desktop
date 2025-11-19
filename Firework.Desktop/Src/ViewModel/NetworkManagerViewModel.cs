@@ -13,6 +13,7 @@ using Firework.Abstraction.MacroLauncher;
 using Firework.Dto.Instructions;
 using Firework.Dto.Results;
 using Firework.Models.Data;
+using Firework.Models.Instructions;
 using Firework.Models.Server;
 
 namespace Firework.Desktop.ViewModel;

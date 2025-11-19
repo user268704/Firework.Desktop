@@ -1,12 +1,11 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 using Firework.Abstraction.Instruction;
 using Firework.Abstraction.Services;
 using Firework.Core.Exceptions;
-using Firework.Core.Services;
-using Firework.Dto.Dto;
 using Firework.Dto.Instructions;
+using Firework.Models.Instructions;
+using FluentResults;
 
 namespace Firework.Core.Instruction;
 
@@ -27,6 +26,7 @@ public class InstructionService : IInstructionService
     
     public InstructionInfo CreateInstruction(string instruction)
     {
+        /*
         try
         {
             var instructionDto = ParseInstruction(instruction);
@@ -48,62 +48,54 @@ public class InstructionService : IInstructionService
         {
             throw new ParseInstructionException(ex.Message);
         }
+    */
+        throw new NotImplementedException();
     }
 
-    public InstructionInfo CreateInstruction(string service, string action)
+    public IResult<InstructionInfo> CreateInstruction(string service, string action)
     {
-        try
+        var actionInfoResult = GetActionInfo(service, action);
+
+        if (actionInfoResult.IsFailed)
         {
-            return new InstructionInfo
-            {
-                ServiceName = service,
-                ActionInfo = GetActionInfo(service, action),
-                Parameters = new List<ActionParameterInfo>()
-            };
+            return Result.Fail<InstructionInfo>(actionInfoResult.Errors);
         }
-        catch (ArgumentOutOfRangeException)
+        
+        return Result.Ok(new InstructionInfo
         {
-            throw new ParseInstructionException("Не удалось спарсить инструкцию");
-        }
-        catch (ParseInstructionException ex)
-        {
-            throw new ParseInstructionException(ex.Message);
-        }
+            ServiceName = service,
+            ActionInfo = actionInfoResult.Value,
+            Parameters = new List<ActionParameterInfo>()
+        });
     }
 
-    public InstructionInfo CreateInstruction(string service, string action, List<ActionParameterInfo> parameters)
+    public IResult<InstructionInfo> CreateInstruction(string service, string action, IEnumerable<ActionParameterInfo> parameters)
     {
-        try
-        {
-            parameters ??= new List<ActionParameterInfo>();
+        var actionInfoResult = GetActionInfo(service, action);
 
-            return new InstructionInfo
-            {
-                ServiceName = service,
-                ActionInfo = GetActionInfo(service, action),
-                Parameters = parameters
-            };
-        }
-        catch (ArgumentOutOfRangeException)
+        if (actionInfoResult.IsFailed)
         {
-            throw new ParseInstructionException("Не удалось спарсить инструкцию");
+            return Result.Fail<InstructionInfo>(actionInfoResult.Errors);
         }
-        catch (ParseInstructionException ex)
+        
+        return Result.Ok(new InstructionInfo
         {
-            throw new ParseInstructionException(ex.Message);
-        }
+            ServiceName = service,
+            ActionInfo = actionInfoResult.Value,
+            Parameters = parameters.ToList()
+        });
     }
 
-    private ActionInfo GetActionInfo(string serviceName, string actionName)
+    private IResult<ActionInfo> GetActionInfo(string serviceName, string actionName)
     {
         if (_servicesInfos.TryGetValue(serviceName, out var serviceInfo))
         {
             var action = serviceInfo.ActionInfo.FirstOrDefault(x => x.Name == actionName);
 
             if (action == null)
-                throw new ParseInstructionException("Такого действия не существует");
+                return Result.Fail<ActionInfo>("Такого действия не существует");
 
-            return action;
+            return Result.Ok(action);
         }
 
         throw new ParseInstructionException("Такого сервиса не существует");
@@ -171,8 +163,9 @@ public class InstructionService : IInstructionService
         return validationResults.Any(x =>  x);
     }
 
-    private List<ActionParameterInfo> GetParameters(string instruction)
+    private List<ActionParameterDto> GetParameters(string instruction)
     {
+        /*
         if (!instruction.Contains('(') && !instruction.Contains(')'))
             return new();
         
@@ -192,6 +185,9 @@ public class InstructionService : IInstructionService
         }
 
         return result;
+    */
+
+        return default;
     }
     
     public string ToString(InstructionInfo instruction)

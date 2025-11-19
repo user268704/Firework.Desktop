@@ -2,6 +2,7 @@
 using Firework.Abstraction.Services;
 using Firework.Core.MacroServices.Attrubutes;
 using Firework.Dto.Instructions;
+using Firework.Models.Instructions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Firework.Core.MacroServices;
@@ -38,7 +39,6 @@ public class ServiceManager : IServiceManager
             throw new ArgumentException("There is no such root", nameof(name));
 
         var result = _serviceProvider.GetRequiredService(service.Type);
-        //var result = Activator.CreateInstance(service.Type) as ServiceBase;
         
         return (IServiceBase)result;
     }
@@ -51,7 +51,6 @@ public class ServiceManager : IServiceManager
             throw new ArgumentException("There is no such root", nameof(serviceInfo));
 
         var result = _serviceProvider.GetService(serviceInfo.Type) as ServiceBase;
-        //var result = Activator.CreateInstance(service.Type) as ServiceBase;
         
         return result;
     }

@@ -2,6 +2,7 @@
 using Firework.Abstraction.Services;
 using Firework.Core.Exceptions;
 using Firework.Dto.Instructions;
+using Firework.Models.Instructions;
 
 namespace Firework.Core.MacroServices;
 

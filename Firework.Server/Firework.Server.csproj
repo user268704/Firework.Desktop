@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentResults" Version="4.0.0" />
       <PackageReference Include="Microsoft.AspNetCore" Version="2.3.0" />
       <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
@@ -20,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
+      <Folder Include="Services\Mapping\" />
     </ItemGroup>
 
 </Project>

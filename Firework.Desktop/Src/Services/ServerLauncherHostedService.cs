@@ -233,7 +233,7 @@ public class ServerLauncherHostedService : IHostedService
 			}
 
 			_serverProcess.OutputDataReceived += (sender, args) =>
-			{
+			{	
 				if (!string.IsNullOrEmpty(args.Data))
 				{
 					_logger.LogInformation("Server Output: {Output}", args.Data);

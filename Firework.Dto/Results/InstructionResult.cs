@@ -1,4 +1,4 @@
-﻿using Firework.Dto.Dto;
+﻿using System.Net;
 
 namespace Firework.Dto.Results;
 
@@ -15,6 +15,6 @@ public class InstructionResult
 
     }
 
-    public StatusCode Status { get; set; }
+    public HttpStatusCode Status { get; set; }
     public string Value { get; init; }
 }
