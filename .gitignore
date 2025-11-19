@@ -1,7 +1,9 @@
 .idea/
 */bin/
 */obj/
+/.vs
 *.dll
 *.exe
 *.pdb
-\.vs\
+/Directory.Build.props
+/Firework.Desktop.sln.DotSettings.user
