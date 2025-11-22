@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Firework.Core.Services.PipeBroker;
 using System.Text;
 using System.Text.Json;
 using Firework.Abstraction.Data;
@@ -12,7 +11,6 @@ namespace Firework.Desktop.Services;
 public class ConnectionBackgroundService : BackgroundService
 {
     private readonly ILogger<ConnectionBackgroundService> _logger;
-    private PipeService? _pipeService;
     private readonly string _pipeName;
 
     public ConnectionBackgroundService(ILogger<ConnectionBackgroundService> logger, IDataRepository<Metadata> metadataRepository)
@@ -31,16 +29,7 @@ public class ConnectionBackgroundService : BackgroundService
             {
                 try
                 {
-                    if (_pipeService != null)
-                    {
-                        _logger.LogInformation("Запуск PipeService клиента...");
-                        _pipeService.Start();
-                    }
-                    else
-                    {
-                        _logger.LogError("PipeService не инициализирован");
-                        await Task.Delay(5000, stoppingToken);
-                    }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -65,12 +54,6 @@ public class ConnectionBackgroundService : BackgroundService
     {
         return Task.Run(() =>
         {
-            _pipeService = new PipeServiceBuilder(_pipeName)
-                .AsClient()
-                .WithLogging(_logger)
-                .WithMessageHandler(HandleIncomingMessage)
-                .OnConnected(HandleConnection)
-                .Build();
                 
             _logger.LogInformation("PipeService инициализирован как клиент");
         }, cancellationToken);
@@ -270,8 +253,6 @@ public class ConnectionBackgroundService : BackgroundService
         
         try
         {
-            _pipeService?.Dispose();
-            _pipeService = null;
         }
         catch (Exception ex)
         {

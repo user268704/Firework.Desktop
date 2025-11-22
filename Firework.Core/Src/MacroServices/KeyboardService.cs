@@ -3,6 +3,7 @@ using Firework.Core.LowLevel.Keyboard;
 using Firework.Core.MacroServices.Attrubutes;
 using Firework.Dto.Instructions;
 using Firework.Models.Instructions;
+using FluentResults;
 
 namespace Firework.Core.MacroServices;
 
@@ -12,7 +13,7 @@ public class KeyboardService : ServiceBase
     {
     }
 
-    public override string Start(InstructionInfo instruction)
+    public override IResult<string> Start(InstructionInfo instruction)
     {
         foreach (var parameter in instruction.Parameters)
             try
@@ -41,7 +42,7 @@ public class KeyboardService : ServiceBase
                 /* Do nothing */
             }
 
-        return null;
+        return Result.Ok("");
     }
 
     private string FirstLetterInUppercase(string text)

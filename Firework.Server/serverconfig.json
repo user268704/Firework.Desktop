@@ -1,0 +1,11 @@
+{
+  "logging": {
+    "enabled": true,
+    "logToConsole": true,
+    "logToFile": true,
+    "filePath": "logs/server.log"
+  },
+  "security": {
+    "accessCode": "izzNhznfGA"
+  }
+}

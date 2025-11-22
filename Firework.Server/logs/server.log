@@ -1,0 +1,5 @@
+2025-11-21T21:46:53.5548837Z [Information] Firework.Server started at 11/21/2025 21:46:53. Current access code: izzNhznfGA
+2025-11-21T21:46:53.7462583Z [Information] Now listening on: http://localhost:5000
+2025-11-21T21:46:53.7479826Z [Information] Application started. Press Ctrl+C to shut down.
+2025-11-21T21:46:53.7485951Z [Information] Hosting environment: Production
+2025-11-21T21:46:53.7490982Z [Information] Content root path: D:\Code\Firework.Desktop\Firework.Server

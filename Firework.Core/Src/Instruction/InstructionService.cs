@@ -2,7 +2,6 @@
 using System.Text.RegularExpressions;
 using Firework.Abstraction.Instruction;
 using Firework.Abstraction.Services;
-using Firework.Core.Exceptions;
 using Firework.Dto.Instructions;
 using Firework.Models.Instructions;
 using FluentResults;
@@ -98,13 +97,13 @@ public class InstructionService : IInstructionService
             return Result.Ok(action);
         }
 
-        throw new ParseInstructionException("Такого сервиса не существует");
+        return Result.Fail<ActionInfo>("Такого сервиса не существует");
     }
 
-    private InstructionDto ParseInstruction(string instruction)
+    private IResult<InstructionDto> ParseInstruction(string instruction)
     {
         if (!IsValid(instruction))
-            throw new ParseInstructionException("Инструкция не прошла валидацию");
+            return Result.Fail<InstructionDto>("Инструкция не прошла валидацию");
         
         var result = new InstructionDto
         {
@@ -113,7 +112,7 @@ public class InstructionService : IInstructionService
             Parameters = GetParameters(instruction)
         };
 
-        return result;
+        return Result.Ok(result);
     }
 
     private string GetActionName(string instruction)

@@ -1,10 +1,8 @@
 ﻿using Firework.Abstraction.MacroLauncher;
 using Firework.Abstraction.Services;
-using Firework.Core.Services;
-using Firework.Dto.Instructions;
 using Firework.Dto.Results;
-using Firework.Models;
 using Firework.Models.Instructions;
+using FluentResults;
 
 namespace Firework.Core.Macro;
 
@@ -17,7 +15,7 @@ public class MacroLauncher : IMacroLauncher
         _serviceManager = serviceManager;
     }
     
-    public InstructionResult Start(InstructionInfo macro)
+    public IResult<InstructionResult> Start(InstructionInfo macro)
     {
         if (macro == null)
             throw new NullReferenceException(nameof(macro));
@@ -28,17 +26,17 @@ public class MacroLauncher : IMacroLauncher
 
             var resultString = service.Start(macro);
 
-            var result = new InstructionResult(resultString);
+            var result = new InstructionResult(resultString.Value);
 
-            return result;
+            return Result.Ok(result);
         }
         catch (NullReferenceException e)
         {
-            return new(e.Message);
+            return Result.Fail<InstructionResult>(e.Message);
         }
     }
 
-    public List<InstructionResult> StartRange(List<InstructionInfo> macro)
+    public IResult<List<InstructionResult>> StartRange(List<InstructionInfo> macro)
     {
         if (macro == null)
             throw new ArgumentOutOfRangeException(nameof(macro));
@@ -51,15 +49,15 @@ public class MacroLauncher : IMacroLauncher
             {
                 var serviceResult = _serviceManager.CreateService(instruction.ServiceName).Start(instruction);
 
-                result.Add(new InstructionResult(serviceResult));
+                result.Add(new InstructionResult(serviceResult.Value));
             }
         }
         catch (NullReferenceException e)
         {
-            throw e;
+            return Result.Fail<List<InstructionResult>>(e.Message);
         }
 
-        return result;
+        return Result.Ok(result);
     }
     
     

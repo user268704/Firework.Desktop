@@ -107,7 +107,7 @@ public sealed partial class NetworkManagerViewModel : ObservableObject
                 instructions.Add(instruction);
             }
 
-            List<InstructionResult> resultInstruction = _launcher.StartRange(instructions);
+            List<InstructionResult> resultInstruction = _launcher.StartRange(instructions).Value;
             resultInstruction.ForEach(i => result.AppendLine(i.Value));
 
             CommandResult += result.ToString();

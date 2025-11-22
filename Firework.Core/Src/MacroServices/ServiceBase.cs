@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
 using Firework.Abstraction.Services;
-using Firework.Core.Exceptions;
-using Firework.Dto.Instructions;
 using Firework.Models.Instructions;
+using FluentResults;
 
 namespace Firework.Core.MacroServices;
 
@@ -15,7 +14,7 @@ public abstract class ServiceBase : IServiceBase
         _serviceManager = serviceManager;
     }
 
-    public virtual string Start(InstructionInfo instruction)
+    public virtual IResult<string> Start(InstructionInfo instruction)
     {
         var service = _serviceManager.GetAllServices()[instruction.ServiceName];
         var module = service.ActionInfo.Find(item => item.Name == instruction.ActionInfo.Name);
@@ -27,22 +26,23 @@ public abstract class ServiceBase : IServiceBase
 
             try
             {
-                var result = (string?)module.Method.Invoke(this, actionParams);
-                return result ?? string.Empty;
+                var result = (string?)module.Method.Invoke(this, actionParams.Value);
+                
+                return Result.Ok(result ?? String.Empty);
             }
             catch (TargetInvocationException e)
             {
-                throw e.InnerException;
+                return Result.Fail<string>(e.InnerException.Message);
             }
         }
 
-        throw new StartServiceException("Такого модуля не существует");
+        return Result.Fail<string>("Такого модуля не существует");
     }
 
-    private object[] ParamFilter(ParameterInfo[] parameters, List<ActionParameterInfo> parameterInfos)
+    private IResult<object[]> ParamFilter(ParameterInfo[] parameters, List<ActionParameterInfo> parameterInfos)
     {
         if (parameters.Length == 0)
-            return [];
+            return Result.Ok<object[]>([]);
 
         var result = new List<ActionParameterInfo>();
 
@@ -69,11 +69,9 @@ public abstract class ServiceBase : IServiceBase
 
         if (requiredParams.ExceptBy(result.Select(x => x.Name), x => x.Name).Any())
         {
-            throw new StartServiceException("Не правильное сопоставление параметров, не указаны все обязательные параметры");
+            return Result.Fail<object[]>("Не правильное сопоставление параметров, не указаны все обязательные параметры");
         }
-
-
-
-        return result.Select(x => x.Value).ToArray<object>();
+        
+        return Result.Ok(result.Select(x => x.Value).ToArray<object>());
     }
 }

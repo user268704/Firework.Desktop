@@ -1,117 +1,111 @@
-﻿using Firework.Abstraction.Data;
-using Firework.Abstraction.Instruction;
-using Firework.Abstraction.MacroLauncher;
-using Firework.Abstraction.Services;
-using Firework.Abstraction.Services.NetEventService;
-using Firework.Core;
-using Firework.Core.Data;
-using Firework.Core.Instruction;
-using Firework.Core.Macro;
-using Firework.Core.MacroServices;
-using Firework.Models.Data;
-using Firework.Models.Metadata;
-using Firework.Server;
-using Firework.Server.Abstraction;
+﻿using Firework.Server.Abstraction;
+using Firework.Server.Configuration;
+using Firework.Server.Endpoints;
+using Firework.Server.Filters;
 using Firework.Server.Hubs;
+using Firework.Server.Logging;
+using Firework.Server.Modules;
 using Firework.Server.Services;
+using Firework.Server.Validators;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
-
-#region Services
-
-builder.Services.AddScoped<IInstructionService, InstructionService>();
-builder.Services.AddSingleton<INetEventService, NetEventService>();
-
-builder.Services.AddScoped<IMacroLauncher, MacroLauncher>();
-builder.Services.AddSingleton<IServiceManager, ServiceManager>();
-builder.Services.AddSingleton<ServiceManager>();
-
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<ICommandExecutor, CommandExecutor>();
-builder.Services.AddScoped<IServiceManagerService, ServerManagerService>();
-builder.Services.AddScoped<RequestContextService, RequestContextService>();
-
-#endregion
-
 builder.Configuration
+    .AddJsonFile("serverconfig.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables()
     .AddCommandLine(args);
 
-#region DataBase
+using var bootstrapLoggerFactory = LoggerFactory.Create(logging => logging.AddSimpleConsole());
+var bootstrapLogger = bootstrapLoggerFactory.CreateLogger<ServerConfigurationProvider>();
+var serverConfigurationProvider = new ServerConfigurationProvider(builder.Environment, bootstrapLogger);
 
-builder.Services.AddScoped<IDataRepository<SettingsItem>, SettingsRepository>();
-builder.Services.AddScoped<IDataRepository<Metadata>, MetadataRepository>();
-builder.Services.AddScoped<DbRepository>();
+ConfigureLogging(builder.Logging, serverConfigurationProvider.Current.Logging);
 
-#endregion
+builder.Services.AddSingleton<IServerConfigurationProvider>(serverConfigurationProvider);
+builder.Services.AddSingleton<IAccessCodeService, AccessCodeService>();
+builder.Services.AddSingleton<IClientRegistry, ClientRegistry>();
+builder.Services.AddSingleton<IMessagePackService, MessagePackService>();
+builder.Services.AddSingleton<ClientAuthorizationFilter>();
 
-#region InstructionServices
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+builder.Services.AddScoped<ISystemStateService, SystemStateService>();
 
-var serviceManager = new ServiceManager();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
-builder.Services.AddService<AppService>(serviceManager);
-builder.Services.AddService<OsService>(serviceManager);
-builder.Services.AddService<KeyboardService>(serviceManager);
-builder.Services.AddService<MouseService>(serviceManager);
-builder.Services.AddService<TaskService>(serviceManager);
+var moduleTypes = new[] {
+    typeof(SystemModule), 
+    typeof(DiagnosticsModule) 
+};
 
-#endregion
+foreach (var moduleType in moduleTypes)
+{
+    builder.Services.AddScoped(moduleType);
+}
 
-#region NetworkConfiguration
+builder.Services.AddSingleton<ICommandModuleRegistry>(sp =>
+{
+    var logger = sp.GetRequiredService<ILogger<CommandModuleRegistry>>();
+    return new CommandModuleRegistry(moduleTypes, logger);
+});
 
-builder.Services.AddRouting();
-builder.Services.AddControllers();
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
-    {
         policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
-});
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});*/
 
 builder.Services.AddSignalR(options =>
-{
-    options.EnableDetailedErrors = true;
-    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
-    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-});
-
-#endregion
+    {
+        options.EnableDetailedErrors = true;
+        options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+        options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+    })
+    .AddMessagePackProtocol(options =>
+    {
+        options.SerializerOptions = MessagePackService.SharedOptions;
+    });
 
 var app = builder.Build();
 
-serviceManager.ServiceProvider = app.Services;
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-
 app.UseCors();
 
-app.MapControllers();
 app.MapHub<SignalHub>("/signal");
 
-app.Logger.LogInformation("Firework.Server запущен на {Time}", DateTime.UtcNow);
+app.MapGroup("api")
+    .MapApiEndpoints();
+
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Firework.Server started at {Time}. Current access code: {AccessCode}",
+    DateTime.UtcNow,
+    serverConfigurationProvider.Current.Security.AccessCode);
 
 app.Run();
 
+var welcomeText = new WelcomeService().GetWelcomeText();
 
-namespace Firework.Server
+logger.LogInformation(welcomeText);
+
+
+static void ConfigureLogging(ILoggingBuilder loggingBuilder, LoggingOptions loggingOptions)
 {
-    static class ServiceCollectionExtend
+    loggingBuilder.ClearProviders();
+
+    if (!loggingOptions.Enabled)
     {
-        public static IServiceCollection AddService<T>(this IServiceCollection services, ServiceManager serviceManager) where T : class, IServiceBase
-        {
-            services.AddScoped<T>();
-            serviceManager.AddService<T>();
-            
-            return services;
-        }
+        return;
+    }
+
+    if (loggingOptions.LogToConsole)
+    {
+        loggingBuilder.AddSimpleConsole();
+    }
+
+    if (loggingOptions.LogToFile && !string.IsNullOrWhiteSpace(loggingOptions.FilePath))
+    {
+        loggingBuilder.AddProvider(new FileLoggerProvider(loggingOptions.FilePath));
     }
 }
